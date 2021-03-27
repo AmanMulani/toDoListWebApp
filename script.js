@@ -1,3 +1,13 @@
+const auth = firebase.auth();
+const logoutBtn = document.querySelector('#logout-btn');
+logoutBtn.addEventListener('click', e => {
+    e.preventDefault();
+    auth.signOut();
+    console.log('User signed out!');
+    window.location.replace("landing_page.html")
+})
+
+
 // getting all required elements
 const inputBox = document.querySelector(".inputField input");
 const addBtn = document.querySelector(".inputField button");

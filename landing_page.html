@@ -11,27 +11,29 @@
 
   <div class="list">
     <h2> WELCOME! </h2>
-    <button onclick="document.getElementById('id1').style.display='block'" style="width: auto;">Login</button>
+    <button onclick="document.getElementById('id1').style.display='block'" style="width: auto;">Sign-In</button>
+    <button onclick="document.getElementById('id2').style.display='block'" style="width: auto;">Sign-Up</button>
   </div>
+
   <div id="id1" class="modal">
 
-    <form class="modal-content animate" action="index.html" method="post">
+    <form class="modal-content animate">
       <!-- <div class="imgcontainer">
         <span onclick="document.getElementById('id1').style.display='none'" class="close" title="Close">&times;</span>
         <img src="images/todo_list1.jpg" alt="Avatar" class="avatar">
       </div> -->
       <div class="modal_text_header">
         <span onclick="document.getElementById('id1').style.display='none'" class="close" title="Close">&times;</span>
-        Login
+        Sign-In
       </div>
       <div class="container">
         <label for="email"><b>Enter Your Email</b></label>
-        <input type="text" placeholder="Enter Email" name="email" required>
+        <input type="text" placeholder="Enter Email" required id="email">
 
         <label for="psw"><b>Create password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required>
+        <input type="password" placeholder="Enter Password" required id="password">
 
-        <button type="submit">Login</button>
+        <button id="signup-btn">Sign-In</button>
         <label>
           <div class="pass">
             <input type="checkbox" checked="checked" name="remember"> Remember password
@@ -45,7 +47,24 @@
     </form>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyCSNO4BsJUQMshCRyghp9INbok4rRT5Vi0",
+      authDomain: "todolistwebapp-72a11.firebaseapp.com",
+      projectId: "todolistwebapp-72a11",
+      storageBucket: "todolistwebapp-72a11.appspot.com",
+      messagingSenderId: "222457007375",
+      appId: "1:222457007375:web:b7e2d2181e462d85c3027a",
+      measurementId: "G-Z6QV3MQT62"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
   <script src="login_page.js"></script>
+
 
 </body>
 

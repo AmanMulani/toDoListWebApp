@@ -87,6 +87,10 @@ body {
     overflow-y: auto;
 }
 
+.lo_todo {
+    list-style: square;
+}
+
 .todoList li {
     position: relative;
     list-style: none;

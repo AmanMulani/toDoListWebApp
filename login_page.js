@@ -17,16 +17,16 @@ firebase.auth().onAuthStateChanged(function (user) {
         var user = firebase.auth().currentUser;
 
         if (user != null) {
-
             var email_id = user.email;
-            window.location.replace("index.html");
+            window.location.replace("to_do_list_page.html");
         }
 
     } else {
-        // window.location.replace("landing_page.html");
+        console.log("NO usesr!");
     }
 });
 
+const firestore = firebase.firestore();
 const auth = firebase.auth();
 const signupBtn = document.querySelector('#signup-btn');
 signupBtn.addEventListener('click', e => {
@@ -43,8 +43,8 @@ signupBtn.addEventListener('click', e => {
 const signInBtn = document.querySelector("#signin-btn");
 signInBtn.addEventListener('click', e => {
     e.preventDefault();
-    const email = document.querySelector('#email').value;
-    const password = document.querySelector('#password').value;
+    const email = document.querySelector('#email1').value;
+    const password = document.querySelector('#password1').value;
     auth.signInWithEmailAndPassword(email, password).then(cred => {
         console.log('User Signed In');
     }).catch((e) => {
@@ -52,24 +52,4 @@ signInBtn.addEventListener('click', e => {
     })
 })
 
-
-
-
-// function signIn() {
-//     console.log("Hereeeeeeeee");
-//     var email = document.getElementById('email').value;
-//     var password = document.getElementById('pass').value;
-
-//     firebase.auth().createUserWithEmailAndPassword(email, password)
-//         .then((userCredential) => {
-//             // Signed in 
-//             var user = userCredential.user;
-//             // ...
-//         })
-//         .catch((error) => {
-//             var errorCode = error.code;
-//             var errorMessage = error.message;
-//             // ..
-//         });
-// }
 

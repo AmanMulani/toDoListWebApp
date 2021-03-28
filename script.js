@@ -1,12 +1,7 @@
 const auth = firebase.auth();
-const logoutBtn = document.querySelector('#logout-btn');
-logoutBtn.addEventListener('click', e => {
-    e.preventDefault();
-    auth.signOut();
-    console.log('User signed out!');
-    window.location.replace("landing_page.html")
-})
-
+const firestore = firebase.firestore();
+uid = "";
+listArray = [];
 
 // getting all required elements
 const inputBox = document.querySelector(".inputField input");
@@ -24,62 +19,93 @@ inputBox.onkeyup = () => {
     }
 }
 
-showTasks(); //calling showTask function
+
+auth.onAuthStateChanged(function (user) {
+    if (user) {
+        var user = auth.currentUser;
+        if (user != null) {
+            document.getElementById("emailID_display").innerHTML = user.email;
+            uid = user.uid;
+            showTasks();
+        }
+    } else {
+        window.location.replace("index.html");
+    }
+});
+
+const logoutBtn = document.querySelector('#logout-btn');
+logoutBtn.addEventListener('click', e => {
+    e.preventDefault();
+    auth.signOut();
+    console.log('User signed out!');
+})
+
 
 addBtn.onclick = () => { //when user click on plus icon button
     let userEnteredValue = inputBox.value; //getting input field value
     let getLocalStorageData = localStorage.getItem("New Todo"); //getting localstorage
-    if (getLocalStorageData == null) { //if localstorage has no data
-        listArray = []; //create a blank array
-    } else {
-        listArray = JSON.parse(getLocalStorageData); //transforming json string into a js object
-    }
-    listArray.push(userEnteredValue); //pushing or adding new value in array
-    localStorage.setItem("New Todo", JSON.stringify(listArray)); //transforming js object into a json string
-    showTasks(); //calling showTask function
-    addBtn.classList.remove("active"); //unactive the add button once the task added
+
+    const currentDate = new Date();
+    const timestamp = currentDate.getTime();
+
+    const docRef = firestore.collection("users").doc(uid).collection("toDoList").doc();
+    docRef.set({
+        "task": userEnteredValue,
+        "timeStamp": timestamp,
+    }).then((event) => {
+        console.log("successfully updated!");
+    });
+    addBtn.classList.remove("active");
 }
 
-function showTasks() {
-    let getLocalStorageData = localStorage.getItem("New Todo");
-    if (getLocalStorageData == null) {
-        listArray = [];
-    } else {
-        listArray = JSON.parse(getLocalStorageData);
-    }
-    const pendingTasksNumb = document.querySelector(".pendingTasks");
-    pendingTasksNumb.textContent = listArray.length; //passing the array length in pendingtask
-    if (listArray.length > 0) { //if array length is greater than 0
-        deleteAllBtn.classList.add("active"); //active the delete button
-    } else {
-        deleteAllBtn.classList.remove("active"); //unactive the delete button
-    }
-    let newLiTag = "";
-    listArray.forEach((element, index) => {
-        newLiTag += `<li>${element}<span class="icon" onclick="deleteTask(${index})"><i class="fas fa-trash"></i></span></li>`;
-    });
-    todoList.innerHTML = newLiTag; //adding new li tag inside ul tag
-    inputBox.value = ""; //once task added leave the input field blank
+showTasks = function () {
+    firestore.collection("users").doc(uid).collection("toDoList").orderBy("timeStamp", "desc").onSnapshot((doc) => {
+        listArray.length = 0;
+        let newLiTag = "";
+        todoList.innerHTML = newLiTag;
+        doc.docs.forEach((d) => {
+            var data = d.data();
+            data["id"] = d.id;
+            console.log(data);
+            listArray.push(data);
+        })
+        if (listArray.length > 0) { //if array length is greater than 0
+            deleteAllBtn.classList.add("active"); //active the delete button
+        } else {
+            deleteAllBtn.classList.remove("active"); //unactive the delete button
+        }
+        const pendingTasksNumb = document.querySelector(".pendingTasks");
+        pendingTasksNumb.textContent = listArray.length;
+        listArray.forEach((element, index) => {
+            newLiTag += `<li>${element["task"]}<span class="icon" id="${element["id"]}"'><i class="fas fa-trash"></i></span></li>`;
+        });
+        todoList.innerHTML = newLiTag; //adding new li tag inside ul tag
+        listArray.forEach((element, index) => {
+            const deleteBtn = document.querySelector("#" + element["id"]);
+            deleteBtn.addEventListener("click", e => {
+                e.preventDefault();
+                deleteTask(element["id"])
+            })
+        });
+        inputBox.value = "";
+    })
 }
+
 
 // delete task function
-function deleteTask(index) {
-    let getLocalStorageData = localStorage.getItem("New Todo");
-    listArray = JSON.parse(getLocalStorageData);
-    listArray.splice(index, 1); //delete or remove the li
-    localStorage.setItem("New Todo", JSON.stringify(listArray));
-    showTasks(); //call the showTasks function
+function deleteTask(id) {
+
+    const docRef = firestore.collection("users").doc(uid).collection("toDoList").doc(id);
+    docRef.delete().then((e) => {
+        console.log('Task Deleted');
+    }).catch((e) => {
+        window.alert(e);
+    })
 }
 
 // delete all tasks function
 deleteAllBtn.onclick = () => {
-    let getLocalStorageData = localStorage.getItem("New Todo"); //getting localstorage
-    if (getLocalStorageData == null) { //if localstorage has no data
-        listArray = []; //create a blank array
-    } else {
-        listArray = JSON.parse(getLocalStorageData); //transforming json string into a js object
-        listArray = []; //create a blank array
-    }
-    localStorage.setItem("New Todo", JSON.stringify(listArray)); //set the item in localstorage
-    showTasks(); //call the showTasks function
+    listArray.forEach((e) => {
+        deleteTask(e["id"]);
+    })//call the showTasks function
 }

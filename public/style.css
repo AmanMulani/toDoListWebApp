@@ -106,13 +106,13 @@ body {
 
 .todoList li .icon {
     position: absolute;
-    right: -45px;
+    right: 0px;
     background: #e74c3c;
     width: 45px;
     text-align: center;
     color: #fff;
     border-radius: 0 3px 3px 0;
-    cursor: pointer;
+    /* cursor: pointer; */
     transition: all 0.2s ease;
 }
 
@@ -121,9 +121,9 @@ body {
     right: 0px;
 }
 
-.todoList li:hover .icon {
+/* .todoList li:hover .icon {
     right: 0px;
-}
+} */
 
 .wrapper .footer {
     display: flex;

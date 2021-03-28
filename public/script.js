@@ -56,6 +56,7 @@ addBtn.onclick = () => { //when user click on plus icon button
         console.log("successfully updated!");
     });
     addBtn.classList.remove("active");
+    inputBox.value = "";
 }
 
 showTasks = function () {
@@ -77,11 +78,11 @@ showTasks = function () {
         const pendingTasksNumb = document.querySelector(".pendingTasks");
         pendingTasksNumb.textContent = listArray.length;
         listArray.forEach((element, index) => {
-            newLiTag += `<li>${element["task"]}<span class="icon" id="${element["id"]}"'><i class="fas fa-trash"></i></span></li>`;
+            newLiTag += `<li>${element["task"]}<span class="icon" id="_${element["id"]}"'><i class="fas fa-trash"></i></span></li>`;
         });
         todoList.innerHTML = newLiTag; //adding new li tag inside ul tag
         listArray.forEach((element, index) => {
-            const deleteBtn = document.querySelector("#" + element["id"]);
+            const deleteBtn = document.querySelector("#_" + element["id"]);
             deleteBtn.addEventListener("click", e => {
                 e.preventDefault();
                 deleteTask(element["id"])
